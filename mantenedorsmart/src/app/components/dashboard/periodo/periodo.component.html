@@ -1,0 +1,93 @@
+<div class="container">
+    <mat-toolbar class="white">
+        <span> Configuracion - ReportePresupuestoUS</span>
+    </mat-toolbar>
+
+    <mat-tab-group mat-align-tabs="start" animationDuration="1000ms">
+      <mat-tab label="Periodo Contable">
+      
+        <mat-form-field appearance="standard">
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Año: " #input>
+        </mat-form-field>
+        
+        <table mat-table [dataSource]="dataSourcePeriodos" class="mat-elevation-z0">
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->      
+            <!-- NUMERO DE PERIODO -->
+            <ng-container matColumnDef="numeroPeriodo">
+              <th mat-header-cell *matHeaderCellDef>N° Periodo</th>
+              <td mat-cell *matCellDef="let element"> {{element.numeroPeriodo}} </td>
+            </ng-container>
+          
+            <!-- NOMBRE DE PERIODO -->
+            <ng-container matColumnDef="nombrePeriodo">
+              <th mat-header-cell *matHeaderCellDef>Periodo</th>
+              <td mat-cell *matCellDef="let element"> {{element.nombrePeriodo}} </td>
+            </ng-container>
+          
+             <!-- ANIO FISCAL -->
+             <ng-container matColumnDef="anioId" >
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="ocultarelemento" >Año Fiscal</th>
+              <td mat-cell *matCellDef="let element" class="ocultarelemento"> {{element.anioId}} </td>
+            </ng-container>
+
+            <!-- ANIO FISCAL -->
+            <ng-container matColumnDef="anioFiscal">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header >Año Fiscal</th>
+              <td mat-cell *matCellDef="let element"> {{element.anioFiscal}} </td>
+            </ng-container>
+          
+            <!-- FECHA INICIO PROCESAMIENTO -->
+            <ng-container matColumnDef="fechaInicioProceso">
+              <th mat-header-cell *matHeaderCellDef>Inicio de Procesamiento</th>
+              <td mat-cell *matCellDef="let element"> {{element.fechaInicioProceso | date: 'dd/MM/yyyy hh:mm a'}} </td>
+            </ng-container>
+           
+           <!-- FECHA FINAL DEL PROCESAMIENTO -->
+            <ng-container matColumnDef="fechaFinalProceso">
+              <th mat-header-cell *matHeaderCellDef>Fin de Procesamiento</th>
+              <td mat-cell *matCellDef="let element"> {{element.fechaFinalProceso | date: 'dd/MM/yyyy hh:mm a'}} </td>
+            </ng-container>
+    
+            <!-- INDICADOR DE ACTIVIDAD DEL PERIODO ACTIVO SE PROCESA INACTIVO NO SE PROCESA -->
+            <ng-container matColumnDef="isActivo">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let element"> 
+                <mat-slide-toggle (change)= "onCheckPeriodo($event,element)"  matTooltip="Procesar Periodo" color="primary"  matTooltipPosition="right"   matTooltipClass="example-tooltip-red" [checked]="element.isActivo" class="example-margin"></mat-slide-toggle> 
+              </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="COLUMNAS_PERIODOS"></tr>
+            <tr mat-row *matRowDef="let row; columns: COLUMNAS_PERIODOS ;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[12, 24]" showFirstLastButtons  aria-label="Select page of periodic elements">
+        </mat-paginator>
+      </mat-tab>
+      
+      <mat-tab label="Año Contable">
+
+        <table mat-table [dataSource]="dataSourceAnioContable" class="mat-elevation-z0">      
+            <!-- ANIO FISCAL -->
+            <ng-container matColumnDef="anioFiscal">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header >Año Fiscal</th>
+              <td mat-cell *matCellDef="let element"> {{element.anioFiscal}} </td>
+            </ng-container>
+        
+            <!-- INDICADOR DE ACTIVIDAD DEL ANIO ACTIVO SE PROCESA INACTIVO NO SE PROCESA -->
+            <ng-container matColumnDef="activo">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let element"> 
+                <mat-slide-toggle matTooltip="Procesar Año" (change)= "onCheckAnioContable($event,element)" color="primary"  matTooltipPosition="right"   matTooltipClass="example-tooltip-red" [checked]="element.activo" class="example-margin"></mat-slide-toggle> 
+              </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="COLUMNAS_ANIO_CONTABLE"></tr>
+            <tr mat-row *matRowDef="let row; columns: COLUMNAS_ANIO_CONTABLE;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[8, 12]" showFirstLastButtons  aria-label="">
+          </mat-paginator>
+      </mat-tab>
+    </mat-tab-group>
+</div>
+
