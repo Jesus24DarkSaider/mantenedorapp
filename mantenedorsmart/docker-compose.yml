@@ -1,0 +1,11 @@
+version: '2'
+services:
+  mantenedorsmarterp:
+    image: 'mantenedorsmarterp'
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mantenedorsmarterp
+    ports:
+      - 8001:80

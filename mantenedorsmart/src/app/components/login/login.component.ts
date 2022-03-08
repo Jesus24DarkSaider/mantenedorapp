@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { PeriodoService } from 'src/app/services/periodo.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   rutaRedireccionar = '';
 
-  constructor(private fb :FormBuilder,private _snackBar: MatSnackBar, private router : Router, private Auth : AuthService ) { 
+  constructor(private fb :FormBuilder,private _snackBar: MatSnackBar, private router : Router, private Auth : AuthService, private consumoService :PeriodoService ) { 
     this.form = this.fb.group({
       usuario: ['',Validators.required],
       password: ['',Validators.required]
@@ -30,12 +31,16 @@ export class LoginComponent implements OnInit {
     const password = this.form.value.password;
     console.log(usuario);
     console.log(password);
-    if(this.Auth.logear(usuario,password) == true){
-      this.lanzarExepcion(0);
-      this.cargarSpinner();
-    }else{
-      this.lanzarExepcion(1);
-    }
+    this.Auth.consultarUsuario(usuario,password).subscribe(respuesta => {
+        console.log(respuesta);
+        if (respuesta.autenticado === true){
+          this.Auth.logear();
+          this.lanzarExepcion(0);
+          this.cargarSpinner();
+        }else{
+          this.lanzarExepcion(1);
+        }
+    })
   }
 
   cargarSpinner(){

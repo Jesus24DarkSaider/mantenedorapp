@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, shareReplay, Subject } from 'rxjs';
+import {Subscription} from 'rxjs';
+import { ConfirmacionDTO } from '../models/ConfirmacionDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -9,20 +11,22 @@ export class AuthService {
 
   constructor(private http :HttpClient) { }
 
+  private host ="http://192.168.0.105:8083";
+  private POST_CONSULTAR_USUARIO="/api/es/configuracion/usuario/v1/{usernarme}/{pass}";
+
   readonly IS_USER_LOGGED ='isLogeado';
   public urlAcceso = '';
 
   public statusLogginSubject = new Subject<boolean>();
   public changeLoginStatus = this.statusLogginSubject.asObservable();
 
-  logear(usuario :string ,password:string ):boolean{
-    console.log('METODO LOGEAR')
-    if(usuario == 'carlos' && password == 'carlos'){
+  private confirmacion:ConfirmacionDTO | undefined;
+
+  logear(){
+      console.log('METODO LOGEAR')
       localStorage.setItem(this.IS_USER_LOGGED,'true');
       this.statusLogginSubject.next(true);
       return true;
-    }
-    return false;
   }
 
   deslogear(){
@@ -37,5 +41,9 @@ export class AuthService {
       return false;
     }
     return true;
+  }
+
+  consultarUsuario(usuario:string,password:string): Observable<ConfirmacionDTO>{
+    return this.http.post<ConfirmacionDTO>(this.host.concat(this.POST_CONSULTAR_USUARIO.replace('{usernarme}',usuario).replace('{pass}',password)),null);
   }
 }
